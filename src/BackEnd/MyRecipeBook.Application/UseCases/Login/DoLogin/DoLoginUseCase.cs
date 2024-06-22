@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MyRecipeBook.Application.Services.Criptography;
+﻿using MyRecipeBook.Application.Services.Criptography;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Repositories.User;

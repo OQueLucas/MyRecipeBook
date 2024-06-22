@@ -3,7 +3,7 @@ using MyRecipeBook.Communication.Responses;
 
 namespace MyRecipeBook.Application.UseCases.Login.DoLogin
 {
-    internal interface IDoLoginUseCase
+    public interface IDoLoginUseCase
     {
         public Task<ResponseRegisteredUserJson> Execute(RequestLoginJson request);
     }
