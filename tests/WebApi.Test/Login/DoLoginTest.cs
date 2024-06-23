@@ -1,28 +1,24 @@
-﻿using MyRecipeBook.Communication.Requests;
-using System.Net.Http.Json;
-using System.Net;
-using System.Text.Json;
+﻿using CommonTestUtilities.Requests;
 using FluentAssertions;
-using WebApi.Test.InlineData;
-using CommonTestUtilities.Requests;
+using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Exceptions;
 using System.Globalization;
+using System.Net;
+using System.Text.Json;
+using WebApi.Test.InlineData;
 
 namespace WebApi.Test.Login
 {
-    public class DoLoginTest : IClassFixture<CustomWebApplicationFactory>
+    public class DoLoginTest : MyRecipeBookClassFixture
     {
         private readonly string method = "login";
-        private readonly HttpClient _httpClient;
 
         private readonly string _email;
         private readonly string _password;
         private readonly string _name;
 
-        public DoLoginTest(CustomWebApplicationFactory factory)
+        public DoLoginTest(CustomWebApplicationFactory factory) : base(factory)
         {
-            _httpClient = factory.CreateClient();
-
             _email = factory.GetEmail();
             _password = factory.GetPassword();
             _name = factory.GetName();
@@ -37,7 +33,7 @@ namespace WebApi.Test.Login
                 Password = _password
             };
 
-            var response = await _httpClient.PostAsJsonAsync(method, request);
+            var response = await DoPost(method, request);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -54,12 +50,7 @@ namespace WebApi.Test.Login
         {
             var request = RequestLoginJsonBuilder.Build();
 
-            if (_httpClient.DefaultRequestHeaders.Contains("Accept-Language"))
-                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
-
-            _httpClient.DefaultRequestHeaders.Add("Accept-Language", culture);
-
-            var response = await _httpClient.PostAsJsonAsync(method, request);
+            var response = await DoPost(method, request, culture);
 
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
