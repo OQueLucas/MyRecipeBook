@@ -6,7 +6,7 @@ using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UseCases.Login.DoLogin
 {
-    internal class DoLoginUseCase : IDoLoginUseCase
+    public class DoLoginUseCase : IDoLoginUseCase
     {
 
         private readonly IUserReadOnlyRepository _repository;
@@ -22,7 +22,7 @@ namespace MyRecipeBook.Application.UseCases.Login.DoLogin
         {
             var encriptedPassword = _passwordEncripter.Encrypt(request.Password);
             
-            var user = await _repository.GetEmailAndPassword(request.Email, encriptedPassword) ?? throw new InvalidLoginException();
+            var user = await _repository.GetByEmailAndPassword(request.Email, encriptedPassword) ?? throw new InvalidLoginException();
 
             return new ResponseRegisteredUserJson
             {
