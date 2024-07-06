@@ -3,6 +3,7 @@ using MyRecipeBook.Application.Services.Criptography;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Repositories.User;
+using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
@@ -14,15 +15,18 @@ public class RegisterUserUseCase : IRegisterUserUseCase
     private readonly IUserReadOnlyRepository _readOnlyRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IAccessTokenGenerator _accessTokenGenerator;
     private readonly PasswordEncripter _passwordEncripter;
 
-    public RegisterUserUseCase(IUserWriteOnlyRepository writeOnlyRepository, IUserReadOnlyRepository readOnlyRepository, IUnitOfWork unitOfWork, IMapper mapper, PasswordEncripter passwordEncripter)
+    public RegisterUserUseCase(IUserWriteOnlyRepository writeOnlyRepository, IUserReadOnlyRepository readOnlyRepository, IUnitOfWork unitOfWork, IMapper mapper, PasswordEncripter passwordEncripter,
+        IAccessTokenGenerator accessTokenGenerator)
     {
         _writeOnlyRepository = writeOnlyRepository;
         _readOnlyRepository = readOnlyRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _passwordEncripter = passwordEncripter;
+        _accessTokenGenerator = accessTokenGenerator;
     }
 
     public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
@@ -38,6 +42,7 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         // Criptografia da senha
 
         user.Password = _passwordEncripter.Encrypt(request.Password);
+        user.UserIdentifier = Guid.NewGuid();
 
         // Salvar no banco de dados
 
@@ -48,6 +53,10 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         return new ResponseRegisteredUserJson
         {
             Name = user.Name,
+            Tokens = new ResponseTokensJson
+            {
+                AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier)
+            }
         };
     }
 
