@@ -88,11 +88,29 @@ namespace MyRecipeBook.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a E-mail and/or password invalid..
+        /// </summary>
+        public static string EMAIL_OR_PASSWORD_INVALID {
+            get {
+                return ResourceManager.GetString("EMAIL_OR_PASSWORD_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a The name cannot be empty..
         /// </summary>
         public static string NAME_EMPTY {
             get {
                 return ResourceManager.GetString("NAME_EMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a No token found..
+        /// </summary>
+        public static string NO_TOKEN {
+            get {
+                return ResourceManager.GetString("NO_TOKEN", resourceCulture);
             }
         }
         
@@ -111,6 +129,15 @@ namespace MyRecipeBook.Exceptions {
         public static string UNKNOWN_ERROR {
             get {
                 return ResourceManager.GetString("UNKNOWN_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User without permission access resource..
+        /// </summary>
+        public static string USER_WITHOUT_PERMISSION_ACCESS_RESOURCE {
+            get {
+                return ResourceManager.GetString("USER_WITHOUT_PERMISSION_ACCESS_RESOURCE", resourceCulture);
             }
         }
     }
