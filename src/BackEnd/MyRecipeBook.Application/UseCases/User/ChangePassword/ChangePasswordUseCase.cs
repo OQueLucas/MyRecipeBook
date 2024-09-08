@@ -7,7 +7,7 @@ using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UseCases.User.ChangePassword;
-internal class ChangePasswordUseCase : IChangePasswordUseCase
+public class ChangePasswordUseCase : IChangePasswordUseCase
 {
     private readonly ILoggedUser _loggedUser;
     private readonly IPasswordEncripter _passwordEncripter;
