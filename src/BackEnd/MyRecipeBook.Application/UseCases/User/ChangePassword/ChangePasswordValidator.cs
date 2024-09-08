@@ -3,7 +3,7 @@ using MyRecipeBook.Application.SharedValidators;
 using MyRecipeBook.Communication.Requests;
 
 namespace MyRecipeBook.Application.UseCases.User.ChangePassword;
-internal class ChangePasswordValidator : AbstractValidator<RequestChangePasswordJson>
+public class ChangePasswordValidator : AbstractValidator<RequestChangePasswordJson>
 {
     public ChangePasswordValidator()
     {
