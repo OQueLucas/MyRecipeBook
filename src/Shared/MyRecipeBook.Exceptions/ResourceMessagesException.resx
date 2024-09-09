@@ -129,11 +129,17 @@
   <data name="EMAIL_OR_PASSWORD_INVALID" xml:space="preserve">
     <value>E-mail and/or password invalid.</value>
   </data>
+  <data name="INVALID_PASSWORD" xml:space="preserve">
+    <value>Invalid password inserted.</value>
+  </data>
   <data name="NAME_EMPTY" xml:space="preserve">
     <value>The name cannot be empty.</value>
   </data>
   <data name="NO_TOKEN" xml:space="preserve">
     <value>No token found.</value>
+  </data>
+  <data name="PASSWORD_DIFFERENT_CURRENT_PASSWORD" xml:space="preserve">
+    <value>New password is different from current password.</value>
   </data>
   <data name="PASSWORD_EMPTY" xml:space="preserve">
     <value>The password must be longer than 6 characters.</value>
