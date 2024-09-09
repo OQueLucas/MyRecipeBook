@@ -15,8 +15,6 @@ public class RegisterUserValidatorTest
 
         var result = validator.Validate(request);
 
-        //Assert.True(result.IsValid);
-
         result.IsValid.Should().BeTrue();
     }
 
@@ -76,6 +74,21 @@ public class RegisterUserValidatorTest
         var validator = new RegisterUserValidator();
 
         var request = RequestRegisterUserJsonBuilder.Build(passwordsLength);
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle()
+            .And.Contain(e => e.ErrorMessage.Equals(ResourceMessagesException.INVALID_PASSWORD));
+    }
+
+    [Fact]
+    public void Error_Password_Empty()
+    {
+        var validator = new RegisterUserValidator();
+
+        var request = RequestRegisterUserJsonBuilder.Build();
+        request.Password = string.Empty;
 
         var result = validator.Validate(request);
 
