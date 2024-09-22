@@ -2,4 +2,5 @@
 internal abstract class DatabaseVersions
 {
     internal const int TABLE_USER = 1;
+    internal const int TABLE_RECIPES = 2;
 }
