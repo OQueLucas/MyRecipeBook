@@ -4,7 +4,7 @@ using CommonTestUtilities.Mapper;
 using FluentAssertions;
 using MyRecipeBook.Application.UseCases.User.Profile;
 
-namespace UseCases.Test.User.Profile;
+namespace UseCases.Test.User.User.Profile;
 
 public class GetUserProfileUseCaseTest
 {
