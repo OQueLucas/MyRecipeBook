@@ -8,7 +8,7 @@ using MyRecipeBook.Application.UseCases.User.Register;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
-namespace UseCases.Test.User.Register;
+namespace UseCases.Test.User.User.Register;
 public class RegisterUserUseCaseTest
 {
     [Fact]

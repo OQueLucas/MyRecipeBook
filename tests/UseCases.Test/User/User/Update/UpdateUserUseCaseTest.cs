@@ -8,7 +8,7 @@ using MyRecipeBook.Domain.Extensions;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
-namespace Validators.Test.User.Update;
+namespace UseCases.Test.User.User.Update;
 public class UpdateUserUseCaseTest
 {
     [Fact]
@@ -71,7 +71,7 @@ public class UpdateUserUseCaseTest
         var loggedUser = LoggedUserBuilder.Build(user);
 
         var userReadOnlyRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
-        if (string.IsNullOrEmpty(email).IsFalse()) 
+        if (string.IsNullOrEmpty(email).IsFalse())
             userReadOnlyRepositoryBuilder.ExistActiveUserWithEmail(email!);
 
         return new UpdateUserUseCase(loggedUser, userUpateRepository, userReadOnlyRepositoryBuilder.Build(), unitOfWork);

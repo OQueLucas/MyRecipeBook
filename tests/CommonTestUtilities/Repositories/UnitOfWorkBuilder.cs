@@ -1,5 +1,5 @@
 ﻿using Moq;
-using MyRecipeBook.Domain.Repositories.User;
+using MyRecipeBook.Domain.Repositories;
 
 namespace CommonTestUtilities.Repositories
 {

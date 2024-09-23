@@ -9,7 +9,7 @@ using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
-namespace UseCases.Test.User.DoLogin
+namespace UseCases.Test.User.Login.DoLogin
 {
     public class DoLoginUserCaseTest
     {
