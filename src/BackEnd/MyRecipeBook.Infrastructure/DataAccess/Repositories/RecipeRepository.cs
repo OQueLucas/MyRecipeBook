@@ -44,4 +44,14 @@ public class RecipeRepository : IRecipeWriteOnlyRepository, IRecipeReadOnlyRepos
 
         return await query.ToListAsync();
     }
+
+    public async Task<Recipe?> GetById(User user, long recipeId)
+    {
+        return await _dbContext.Recipes
+            .AsNoTracking()
+            .Include(recipe => recipe.Ingredients)
+            .Include(recipe => recipe.Instructions)
+            .Include(recipe => recipe.DishTypes)
+            .FirstOrDefaultAsync(recipe => recipe.Active && recipe.Id == recipeId && recipe.UserId == user.Id);
+    }
 }
