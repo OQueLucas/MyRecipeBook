@@ -3,10 +3,9 @@ using MyRecipeBook.Domain.Dtos;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Extensions;
 using MyRecipeBook.Domain.Repositories.Recipe;
-using System.Linq;
 
 namespace MyRecipeBook.Infrastructure.DataAccess.Repositories;
-public class RecipeRepository : IRecipeWriteOnlyRepository, IRecipeReadOnlyRepository
+public class RecipeRepository : IRecipeWriteOnlyRepository, IRecipeReadOnlyRepository, IRecipeUpdateOnlyRepository
 {
     private readonly MyRecipeBookDbContext _dbContext;
 
@@ -45,20 +44,32 @@ public class RecipeRepository : IRecipeWriteOnlyRepository, IRecipeReadOnlyRepos
 
         if (filters.RecipeTitle_Ingredient.NotEmpty())
         {
-            query = query.Where(recipe => recipe.Title.Contains(filters.RecipeTitle_Ingredient) 
+            query = query.Where(recipe => recipe.Title.Contains(filters.RecipeTitle_Ingredient)
             || recipe.Ingredients.Any(ingredient => ingredient.Item.Contains(filters.RecipeTitle_Ingredient)));
         }
 
         return await query.ToListAsync();
     }
 
-    public async Task<Recipe?> GetById(User user, long recipeId)
+    async Task<Recipe?> IRecipeReadOnlyRepository.GetById(User user, long recipeId) => await GetFullRecipe(user, recipeId, track: false);
+
+    async Task<Recipe?> IRecipeUpdateOnlyRepository.GetById(User user, long recipeId) => await GetFullRecipe(user, recipeId, track: true);
+
+    public void Update(Recipe recipe) => _dbContext.Recipes.Update(recipe);
+
+    private Task<Recipe?> GetFullRecipe(User user, long recipeId, bool track = false)
     {
-        return await _dbContext.Recipes
-            .AsNoTracking()
+        var query = _dbContext.Recipes
             .Include(recipe => recipe.Ingredients)
             .Include(recipe => recipe.Instructions)
             .Include(recipe => recipe.DishTypes)
-            .FirstOrDefaultAsync(recipe => recipe.Active && recipe.Id == recipeId && recipe.UserId == user.Id);
+            .AsQueryable();
+
+        if (track == false)
+            query = query.AsNoTracking();
+
+        var result = query.FirstOrDefaultAsync(recipe => recipe.Active && recipe.Id == recipeId && recipe.UserId == user.Id);
+
+        return result;
     }
 }
