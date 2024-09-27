@@ -53,7 +53,7 @@ public class UpdateRecipeUseCaseTest
         Func<Task> act = async () => await useCase.Execute(recipe.Id, request);
 
         (await act.Should().ThrowAsync<ErrorOnValidationException>())
-            .Where(e => e.ErrorMessages.Count == 1 && e.ErrorMessages.Contains(ResourceMessagesException.RECIPE_TITLE_EMPTY));
+            .Where(e => e.GetErrorMessages().Count == 1 && e.GetErrorMessages().Contains(ResourceMessagesException.RECIPE_TITLE_EMPTY));
     }
 
     private static UpdateRecipeUseCase CreateUseCase(MyRecipeBook.Domain.Entities.User user, MyRecipeBook.Domain.Entities.Recipe? recipe = null)
