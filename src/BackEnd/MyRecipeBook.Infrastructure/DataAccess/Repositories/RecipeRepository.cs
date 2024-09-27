@@ -76,7 +76,7 @@ public class RecipeRepository : IRecipeWriteOnlyRepository, IRecipeReadOnlyRepos
             .Include(recipe => recipe.DishTypes)
             .AsQueryable();
 
-        if (track == false)
+        if (track.IsFalse())
             query = query.AsNoTracking();
 
         var result = query.FirstOrDefaultAsync(recipe => recipe.Active && recipe.Id == recipeId && recipe.UserId == user.Id);
