@@ -86,6 +86,7 @@ public class RecipeController : MyRecipeBookController
     [Route("image/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateImage([FromServices] IAddUpdateImageCoverUseCase useCase, [FromRoute][ModelBinder(typeof(MyRecipeBookIdBinder))] long id, IFormFile file)
     {
         await useCase.Execute(id, file);
