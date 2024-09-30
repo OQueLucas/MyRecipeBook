@@ -1,8 +1,8 @@
-﻿using CommonTestUtilities.Entities;
+﻿using CommonTestUtilities.BlobStorage;
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.LoggedUser;
 using CommonTestUtilities.Repositories;
 using FluentAssertions;
-using Microsoft.Identity.Client;
 using MyRecipeBook.Application.UseCases.Recipe.Delete;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
@@ -30,7 +30,7 @@ public class DeleteRecipeUseCaseTest
 
         var useCase = CreateUseCase(user);
 
-        Func<Task> act = async () => { await useCase.Execute(1); };
+        Func<Task> act = async () => { await useCase.Execute(1000); };
 
         (await act.Should().ThrowAsync<NotFoundException>())
             .Where(e => e.Message.Equals(ResourceMessagesException.RECIPE_NOT_FOUND));
@@ -42,7 +42,8 @@ public class DeleteRecipeUseCaseTest
         var reposiitoryRead = new RecipeReadOnlyRepositoryBuilder().GetById(user, recipe).Build();
         var repositoryWrite = RecipeWriteOnlyRepositoryBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
+        var blobStorage = new BlobStorageServiceBuilder().GetFileUrl(user, recipe?.ImageIdentifier).Build();
 
-        return new DeleteRecipeUseCase(loggedUser, reposiitoryRead, repositoryWrite, unitOfWork);
+        return new DeleteRecipeUseCase(loggedUser, reposiitoryRead, repositoryWrite, unitOfWork, blobStorage);
     }
 }
