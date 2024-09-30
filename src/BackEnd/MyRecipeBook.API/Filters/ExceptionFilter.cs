@@ -23,10 +23,7 @@ public class ExceptionFilter : IExceptionFilter
     }
     private static void ThrowUnknownException(ExceptionContext context)
     {
-        if (context.Exception is ErrorOnValidationException)
-        {
-            context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Result = new ObjectResult(new ResponseErrorJson(ResourceMessagesException.UNKNOWN_ERROR));
-        }
+        context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Result = new ObjectResult(new ResponseErrorJson(ResourceMessagesException.UNKNOWN_ERROR));
     }
 }
