@@ -87,6 +87,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<IUserReadOnlyRepository, UserRepository>();
         services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
         services.AddScoped<IUserUpdateOnlyRepository, UserRepository>();
+        services.AddScoped<IUserDeleteOnlyRepository, UserRepository>();
         services.AddScoped<IRecipeWriteOnlyRepository, RecipeRepository>();
         services.AddScoped<IRecipeReadOnlyRepository, RecipeRepository>();
         services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepository>();
@@ -157,6 +158,9 @@ public static class DependencyInjectionExtension
     private static void AddQueue(IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetValue<string>("Settings:ServiceBus:DeleteUserAccount");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+            return;
 
         var client = new ServiceBusClient(connectionString, new ServiceBusClientOptions
         {
