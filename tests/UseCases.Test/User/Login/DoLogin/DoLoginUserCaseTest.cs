@@ -53,7 +53,7 @@ namespace UseCases.Test.User.Login.DoLogin
             var accessTokenGeneration = JwtTokenGeneratorBuilder.Build();
 
             if (user is not null)
-                userReadOnlyRepositoryBuilder.GetByEmailAndPassword(user);
+                userReadOnlyRepositoryBuilder.GetByEmail(user);
 
             return new DoLoginUseCase(
                 userReadOnlyRepositoryBuilder.Build(), passwordEncripter, accessTokenGeneration);
