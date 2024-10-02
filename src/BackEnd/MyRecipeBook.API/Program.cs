@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 using MyRecipeBook.API.BackgroundServices;
 using MyRecipeBook.API.Converters;
@@ -5,8 +6,8 @@ using MyRecipeBook.API.Filters;
 using MyRecipeBook.API.Middleware;
 using MyRecipeBook.API.Token;
 using MyRecipeBook.Application;
-using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Domain.Extensions;
+using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Infrastructure;
 using MyRecipeBook.Infrastructure.Extensions;
 using MyRecipeBook.Infrastructure.Migrations;
@@ -69,6 +70,8 @@ builder.Services.AddHttpContextAccessor();
 if (builder.Configuration.IsUnitTestEnviroment().IsFalse())
 {
     builder.Services.AddHostedService<DeleteUserService>();
+
+    AddGoogleAuthentication();
 }
 
 var app = builder.Build();
@@ -103,6 +106,23 @@ void MigrateDatabase()
     var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
     DatabaseMigration.Migrate(databaseType, connectionString, serviceScope.ServiceProvider);
+}
+
+void AddGoogleAuthentication()
+{
+    var clientId = builder.Configuration.GetValue<string>("Settings:Google:ClientId")!;
+    var clientSecret = builder.Configuration.GetValue<string>("Settings:Google:ClientSecret")!;
+
+    builder.Services.AddAuthentication(config =>
+    {
+        config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = clientId;
+        googleOptions.ClientSecret = clientSecret;
+    });
 }
 
 public partial class Program
