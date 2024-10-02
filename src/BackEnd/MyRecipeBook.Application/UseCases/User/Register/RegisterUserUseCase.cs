@@ -2,8 +2,10 @@
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
 using MyRecipeBook.Domain.Repositories;
+using MyRecipeBook.Domain.Repositories.Token;
 using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Domain.Security.Criptography;
+using MyRecipeBook.Domain.Security.RefreshToken;
 using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
@@ -18,9 +20,11 @@ public class RegisterUserUseCase : IRegisterUserUseCase
     private readonly IMapper _mapper;
     private readonly IAccessTokenGenerator _accessTokenGenerator;
     private readonly IPasswordEncripter _passwordEncripter;
+    private readonly IRefreshTokenGenerator _refreshTokenGenerator;
+    private readonly ITokenRepository _tokenRepository;
 
     public RegisterUserUseCase(IUserWriteOnlyRepository writeOnlyRepository, IUserReadOnlyRepository readOnlyRepository, IUnitOfWork unitOfWork, IMapper mapper, IPasswordEncripter passwordEncripter,
-        IAccessTokenGenerator accessTokenGenerator)
+        IAccessTokenGenerator accessTokenGenerator, IRefreshTokenGenerator refreshTokenGenerator, ITokenRepository tokenRepository)
     {
         _writeOnlyRepository = writeOnlyRepository;
         _readOnlyRepository = readOnlyRepository;
@@ -28,37 +32,47 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         _mapper = mapper;
         _passwordEncripter = passwordEncripter;
         _accessTokenGenerator = accessTokenGenerator;
+        _refreshTokenGenerator = refreshTokenGenerator;
+        _tokenRepository = tokenRepository;
     }
 
     public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
     {
-        // Validar a request
-
         await Validate(request);
 
-        // Mapear a request em uma entidade
-
         var user = _mapper.Map<Domain.Entities.User>(request);
-
-        // Criptografia da senha
-
         user.Password = _passwordEncripter.Encrypt(request.Password);
-        user.UserIdentifier = Guid.NewGuid();
-
-        // Salvar no banco de dados
 
         await _writeOnlyRepository.Add(user);
 
         await _unitOfWork.Commit();
+
+        var refreshToken = await CreateAndSaveRefreshToken(user);
 
         return new ResponseRegisteredUserJson
         {
             Name = user.Name,
             Tokens = new ResponseTokensJson
             {
-                AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier)
+                AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier),
+                RefreshToken = refreshToken
             }
         };
+    }
+
+    private async Task<string> CreateAndSaveRefreshToken(Domain.Entities.User user)
+    {
+        var refreshToken = new Domain.Entities.RefreshToken
+        {
+            Value = _refreshTokenGenerator.Generate(),
+            UserId = user.Id,
+        };
+
+        await _tokenRepository.SaveNewRefreshToken(refreshToken);
+
+        await _unitOfWork.Commit();
+
+        return refreshToken.Value;
     }
 
     private async Task Validate(RequestRegisterUserJson request)
